@@ -1,0 +1,16 @@
+.highlight{
+    background-color: rgb(8, 216, 8);
+    border-radius: 50%;
+    padding: 0 !important;
+    font-weight: bold;
+    color: white;
+    height: 50px !important;
+    width: 50px !important;
+}
+.full-size-calendar {
+    width: 100% !important;
+    height: 100vh !important;
+    .react-calendar__tile {
+        height: 100%;
+    }
+}

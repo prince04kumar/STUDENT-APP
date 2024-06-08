@@ -2,6 +2,10 @@ import express from 'express';
 import cors from 'cors';
 import dbPromise from './db.js'; // Adjust path if necessary
 import authRout from './Routes/auth.js'; // Adjust path if necessary
+import borrowRout from './Routes/borrow.js'; // Adjust path if necessary
+import expensesRout from './Routes/expenses.js'; // Adjust path if necessary
+import receivedRout from './Routes/received.js'; // Adjust path if necessary
+import normalsRout from './Routes/normals.js'
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -27,6 +31,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRout);
+app.use('/api/borrow', borrowRout);
+app.use('/api/expenses', expensesRout);
+app.use('/api/received', receivedRout);
+app.use('/api/normals', normalsRout);
 
 // Default route
 app.get('/', (req, res) => {

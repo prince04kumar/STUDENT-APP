@@ -6,10 +6,12 @@ import dbPromise from '../db.js'; // Adjust path if necessary
 
 const router = express.Router();
 
-// Function to create Users table if not exists
-const createUsersTable = async () => {
+// Function to create Users and Finance tables and the necessary triggers if not exists
+const createTablesAndTriggers = async () => {
     try {
         const db = await dbPromise;
+
+        // Create Users table
         await db.run(`
             CREATE TABLE IF NOT EXISTS Users (
                 userID TEXT PRIMARY KEY,
@@ -20,13 +22,46 @@ const createUsersTable = async () => {
                 resetTokenExpiry INTEGER
             )
         `);
-        console.log('Users table created or already exists');
+
+        // Create Finance table
+        await db.run(`
+            CREATE TABLE IF NOT EXISTS Finance (
+                userID TEXT PRIMARY KEY,
+                user_name TEXT UNIQUE NOT NULL,
+                spend TEXT DEFAULT '{}',
+                borrow TEXT DEFAULT '{}',
+                received TEXT DEFAULT '{}',
+                FOREIGN KEY(userID) REFERENCES Users(userID) ON DELETE CASCADE
+            )
+        `);
+
+        // Create trigger to insert into Finance table when a new user is created
+        await db.run(`
+            CREATE TRIGGER IF NOT EXISTS after_user_insert
+            AFTER INSERT ON Users
+            FOR EACH ROW
+            BEGIN
+                INSERT INTO Finance (userID, user_name) VALUES (NEW.userID, NEW.user_name);
+            END;
+        `);
+
+        // Create trigger to delete from Finance table when a user is deleted
+        await db.run(`
+            CREATE TRIGGER IF NOT EXISTS after_user_delete
+            AFTER DELETE ON Users
+            FOR EACH ROW
+            BEGIN
+                DELETE FROM Finance WHERE userID = OLD.userID;
+            END;
+        `);
+
+        console.log('Users and Finance tables and triggers created or already exist');
     } catch (err) {
-        console.error('Error creating table:', err.message);
+        console.error('Error creating tables and triggers:', err.message);
     }
 };
 
-createUsersTable(); // Call function to create Users table
+createTablesAndTriggers(); // Call function to create Users and Finance tables and triggers
 
 // Route to register a new user
 router.post('/register', async (req, res) => {
@@ -38,10 +73,12 @@ router.post('/register', async (req, res) => {
 
     try {
         const db = await dbPromise;
+        const userID = Date.now().toString();
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Insert into Users table
         await db.run('INSERT INTO Users (userID, email, password, user_name) VALUES (?, ?, ?, ?)', [
-            Date.now().toString(), email, hashedPassword, user_name
+            userID, email, hashedPassword, user_name
         ]);
 
         res.status(201).json({ message: 'User registered successfully' });
@@ -103,18 +140,19 @@ router.post('/reset-password', async (req, res) => {
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
-        const resetToken = Math.random().toString(36).substring(2, 10);
 
+        const resetToken = Math.random().toString(36).substring(2, 10);
         const resetTokenExpiry = Date.now() + 3600000;
+
         await db.run('UPDATE Users SET resetToken = ?, resetTokenExpiry = ? WHERE email = ?', [
             resetToken, resetTokenExpiry, email
         ]);
-        
+
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: process.env.SENDER_EMAIL, 
-                pass: process.env.SENDER_PASS 
+                user: process.env.SENDER_EMAIL,
+                pass: process.env.SENDER_PASS
             }
         });
 
@@ -139,6 +177,7 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
+// Route to reset password
 router.post('/reset-password/:token', async (req, res) => {
     const { token } = req.params;
     const { newPassword } = req.body;
@@ -160,12 +199,28 @@ router.post('/reset-password/:token', async (req, res) => {
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
         await db.run('UPDATE Users SET password = ?, resetToken = NULL, resetTokenExpiry = NULL WHERE userID = ?', [
-            hashedPassword, user.userID 
+            hashedPassword, user.userID
         ]);
 
         res.json({ message: 'Password reset successful' });
     } catch (err) {
         console.error('Error resetting password:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Route to delete a user (deletion in Finance table will be handled by the trigger)
+router.delete('/delete/:userID', async (req, res) => {
+    const { userID } = req.params;
+
+    try {
+        const db = await dbPromise;
+
+        // Delete from Users table (Finance deletion will be triggered automatically)
+        await db.run('DELETE FROM Users WHERE userID = ?', [userID]);
+
+        res.json({ message: 'User and associated finance data deleted successfully' });
+    } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
