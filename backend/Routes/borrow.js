@@ -43,6 +43,7 @@ router.post('/add', async (req, res) => {
 
         res.status(201).json({ message: 'Borrow entry added successfully' });
     } catch (err) {
+        console.error('Error adding borrow entry:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
@@ -61,12 +62,15 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
 
         const borrowData = JSON.parse(user.borrow || '{}');
 
+        // Check if the specific entry exists
         if (!borrowData[year] || !borrowData[year][month] || !borrowData[year][month][date] || !borrowData[year][month][date][index]) {
             return res.status(404).json({ error: 'Borrow entry not found' });
         }
 
+        // Remove the entry from the array
         borrowData[year][month][date].splice(index, 1);
 
+        // Clean up empty objects if necessary
         if (borrowData[year][month][date].length === 0) {
             delete borrowData[year][month][date];
         }
@@ -77,12 +81,42 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
             delete borrowData[year];
         }
 
+        // Update the database with the modified borrow data
         await db.run('UPDATE Finance SET borrow = ? WHERE userID = ?', [
             JSON.stringify(borrowData), userID
         ]);
 
         res.json({ message: 'Borrow entry deleted successfully' });
     } catch (err) {
+        console.error('Error deleting borrow entry:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+// Route to get borrow data for a specific date, month, and year
+router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
+    const { userID, year, month, date } = req.params;
+
+    try {
+        const db = await dbPromise;
+        const user = await db.get('SELECT * FROM Finance WHERE userID = ?', [userID]);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const borrowData = JSON.parse(user.borrow || '{}');
+
+        if (!borrowData[year] || !borrowData[year][month] || !borrowData[year][month][date]) {
+            return res.status(404).json({ error: 'No borrow entries found for the specified date' });
+        }
+
+        const borrowEntries = borrowData[year][month][date];
+
+        res.json({ borrowEntries });
+    } catch (err) {
+        console.error('Error fetching borrow entries:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

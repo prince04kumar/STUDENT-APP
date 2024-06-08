@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaBars, FaBookmark, FaDatabase, FaDollarSign, FaHome, FaLightbulb, FaMoneyBill, FaReceipt, FaUtensils, FaWindowClose } from 'react-icons/fa';
-import { FaMoneyBill1, FaPeopleGroup, FaPlateWheat } from 'react-icons/fa6';
-import { MdAdd, MdArtTrack, MdDashboard, MdEmojiPeople, MdLogout } from 'react-icons/md';
+import { FaArrowDown, FaBagShopping, FaMoneyBill1, FaPeopleGroup, FaPlateWheat } from 'react-icons/fa6';
+import { MdAdd, MdArtTrack, MdAutoGraph, MdDashboard, MdEmojiPeople, MdLogout } from 'react-icons/md';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
@@ -24,6 +24,17 @@ export default function Nev() {
                     <Link to="/budget-planner" className={`${location.pathname === '/budget-planner' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <FaDollarSign /> &nbsp; Budget Planner
                     </Link>
+
+                    <Link to="/borrow" className={`${location.pathname === '/borrow' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
+                        <FaBagShopping /> &nbsp; Borrow
+                    </Link>
+                    <Link to="/gain" className={`${location.pathname === '/gain' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
+                        <MdAutoGraph /> &nbsp; Gain
+                    </Link>
+                    <Link to="/spent" className={`${location.pathname === '/spent' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
+                        <FaArrowDown /> &nbsp; Spent
+                    </Link>
+
                     <Link to="/expense-tracker" className={`${location.pathname === '/expense-tracker' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <MdArtTrack /> &nbsp; Expense Tracker
                     </Link>
@@ -46,6 +57,15 @@ export default function Nev() {
                     </Link>
                     <Link to="/budget-planner" className={`${location.pathname === '/budget-planner' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <FaDollarSign /> &nbsp; Budget Planner
+                    </Link>
+                    <Link to="/borrow" className={`${location.pathname === '/borrow' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
+                        <FaBagShopping /> &nbsp; Borrow
+                    </Link>
+                    <Link to="/gain" className={`${location.pathname === '/gain' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
+                        <MdAutoGraph /> &nbsp; Gain
+                    </Link>
+                    <Link to="/spent" className={`${location.pathname === '/spent' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
+                        <FaArrowDown /> &nbsp; Spent
                     </Link>
                     <Link to="/expense-tracker" className={`${location.pathname === '/expense-tracker' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <MdArtTrack /> &nbsp; Expense Tracker
