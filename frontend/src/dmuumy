@@ -1,0 +1,32 @@
+<div data-collapse-toggle="mobile-menu-2" type="button" flex flex-col pt-4 className={`${isOpen ? 'flex' : 'hidden'}`}>
+                                <div className="flex items-center justify-between">
+                                    <Link to="/" className="text-white text-3xl font-semibold uppercase hover:text-gray-300">Admin</Link>
+                                    <button className="text-white text-3xl focus:outline-none" onClick={() => setIsOpen(!isOpen)}>
+                                        {/* @click="isOpen = !isOpen" */}
+                                        {!isOpen && <FaBars />}
+                                        {isOpen && <FaWindowClose />}
+                                    </button>
+                                </div>
+
+                                <nav className={`flex flex-col pt-4 ${isOpen ? 'flex' : 'hidden'}`}>
+                                    {/* :className="isOpen ? 'flex': 'hidden'" */}
+                                    <Link to="/admin" className={location.pathname == '/admin' ? `flex items-center active-nav-link text-white py-4 pl-6 nav-item` : `flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item`}>
+                                        <FaHome /> &nbsp; Home
+                                    </Link>
+                                    <Link to="/admin/kot" className={location.pathname == '/admin/kot' ? `flex items-center active-nav-link text-white py-4 pl-6 nav-item` : `flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item`}>
+                                        <FaMoneyBill /> &nbsp; Budget Planner
+                                    </Link>
+                                    <Link to="/admin/receipt" className={location.pathname == '/admin/receipt' ? `flex items-center active-nav-link text-white py-4 pl-6 nav-item` : `flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item`}>
+                                        <FaCoins /> &nbsp; Expense Trackers
+                                    </Link>
+                                    <Link to="/admin/manage-items" className={location.pathname == '/admin/manage-items' ? `flex items-center active-nav-link text-white py-4 pl-6 nav-item` : `flex items-center text-white opacity-75 hover:opacity-100 py-4 pl-6 nav-item`}>
+                                        <FaLightbulb /> &nbsp; Financial Tips
+                                    </Link>
+
+                                    <div className="p-6">
+                                        <button className="w-full bg-white cta-btn font-semibold py-2 mt-5 rounded-br-lg rounded-bl-lg rounded-tr-lg shadow-lg hover:shadow-xl hover:bg-gray-300 flex items-center justify-center" onClick={() => { localStorage.clear(); navigate('/admin/login') }}>
+                                            <FaSignOutAlt /> &nbsp; Logout
+                                        </button>
+                                    </div>
+                                </nav>
+                            </div>
