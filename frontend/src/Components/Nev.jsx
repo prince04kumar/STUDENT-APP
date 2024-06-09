@@ -4,6 +4,7 @@ import { FaArrowDown, FaBagShopping, FaMoneyBill1, FaPeopleGroup, FaPlateWheat }
 import { MdAdd, MdArtTrack, MdAutoGraph, MdDashboard, MdEmojiPeople, MdLogout } from 'react-icons/md';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Nev() {
     const [isOpen, setIsOpen] = useState(false);
