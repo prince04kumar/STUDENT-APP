@@ -14,6 +14,7 @@ import Finance from './Pages/Finance'
 import Spent from './Pages/Spent'
 import Gain from './Pages/Gain'
 import Borrow from './Pages/Borrow'
+import Monthely from './Pages/Monthely'
 
 function App() {
 
@@ -24,6 +25,7 @@ function App() {
         <Route path='/budget-planner' element={<Budged />} />
         <Route path='/expense-tracker' element={<Expense />} />
         <Route path='/financial-tip' element={<Finance />} />
+        <Route path='/monthaly-report' element={<Monthely />} />
         <Route path='/borrow' element={<Borrow />} />
         <Route path='/gain' element={<Gain />} />
         <Route path='/spent' element={<Spent />} />

@@ -35,7 +35,7 @@ export default function Register() {
                 throw new Error('Registration failed');
             }
             alert('Registration Successful');
-            navigate('/auth/login'); // Redirect to home page after successful registration
+            navigate('/auth/login'); 
         } catch (error) {
             console.error('Registration Error', error);
             setError('Registration failed. Please try again.');

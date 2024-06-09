@@ -34,7 +34,7 @@ export default function Reset() {
             }
             const data = await response.json();
             localStorage.setItem('user', JSON.stringify(data.user));
-            navigate('/auth/login'); // Redirect to home after successful password reset
+            navigate('/auth/login'); 
         } catch (error) {
             console.error('Password Reset Error', error);
             setError('Invalid token or password. Please try again.');
@@ -58,7 +58,7 @@ export default function Reset() {
                 throw new Error('Failed to send reset email');
             }
             setResetState(true);
-            setError(''); // Clear error state
+            setError(''); 
         } catch (error) {
             console.error('Reset Email Request Error', error);
             setError('User not found or error sending reset email.');

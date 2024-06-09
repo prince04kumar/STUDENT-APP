@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import logo from '../assets/Images/logo.jpg'
-import saving from '../assets/Images/saving.jpg'
+import logo from '../assets/Images/logo.png'
+import saving from '../assets/Images/saving.png'
 import { FaBars, FaCoins, FaFacebook, FaHome, FaInstagram, FaLightbulb, FaLinkedin, FaMoneyBill, FaSignOutAlt, FaTwitter, FaWindowClose } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import '../index.css'
@@ -16,7 +16,7 @@ export default function Root() {
         setDarkMode(!darkMode);
     };
 
-    // Effect to update HTML class when darkMode changes
+    // update HTML class when darkMode changes
     useEffect(() => {
         if (darkMode) {
             document.documentElement.classList.add('dark');
@@ -54,9 +54,9 @@ export default function Root() {
                                     <Link to="/auth/register" className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800">Sign UP</Link>
                                 </>
                             }
-                            
-                            <div onClick={()=>setDarkMode(!darkMode)} className='px-2 dark:text-white text-2xl cursor-pointer'>
-                                {!darkMode ? <MdDarkMode />: <MdLightMode/>}
+
+                            <div onClick={() => setDarkMode(!darkMode)} className='px-2 dark:text-white text-2xl cursor-pointer'>
+                                {!darkMode ? <MdDarkMode /> : <MdLightMode />}
                             </div>
                         </div>
                         <div className="items-center justify-between hidden w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
@@ -100,6 +100,7 @@ export default function Root() {
                 <div className="max-w-screen-xl px-4 py-8 mx-auto space-y-12 lg:space-y-20 lg:py-24 lg:px-6">
 
                     <div className="items-center gap-8 lg:grid lg:grid-cols-2 xl:gap-16">
+                        <img className="hidden w-full mb-4 rounded-lg lg:mb-0 lg:flex" src={saving} alt="dashboard feature image" />
                         <div className="text-gray-500 sm:text-lg dark:text-gray-400">
                             <h2 className="mb-4 text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
                                 How StuFinance Helps You
@@ -147,7 +148,6 @@ export default function Root() {
                                 StuFinance makes managing your finances easy and intuitive, helping you achieve financial stability and success throughout your student life.
                             </p>
                         </div>
-                        <img className="hidden w-full mb-4 rounded-lg lg:mb-0 lg:flex" src={saving} alt="dashboard feature image" />
                     </div>
 
                 </div>
