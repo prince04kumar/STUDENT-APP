@@ -150,18 +150,18 @@ export default function Expense() {
                 <p className="text-xl text-black dark:text-white pb-3 flex items-center">
                   <i className="fas fa-check mr-3"></i> Representation
                 </p>
-                <div className="p-6 bg-white dark:bg-gray-800">
+                <div className="p-6 bg-white dark:bg-gray-800 flex items-center justify-center">
                   <PieChart
                     series={[
                       {
                         data: [
                           { id: 0, value: summaryData.month?.total, label: 'Total Expense (Month)', color: '#FF5733' },
-                          { id: 1, value: summaryData.date?.total, label: `Total Expense (Date: ${year}-${month}-${date})`, color: '#0096FF' },
+                          { id: 1, value: summaryData.date?.total, label: `Total Expense (Date)`, color: '#0096FF' },
                           { id: 2, value: summaryData.overallTotal, label: "Overall Total Expense", color: '#00ff33' }
                         ],
                       },
                     ]}
-                    width={400}
+                    width={500}
                     height={200}
                   />
                 </div>
