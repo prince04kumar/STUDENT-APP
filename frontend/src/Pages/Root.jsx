@@ -9,7 +9,7 @@ import { MdDarkMode, MdLightMode } from 'react-icons/md';
 export default function Root() {
     const [isOpen, setIsOpen] = useState(false);
     const user = localStorage.getItem("user");
-    const [darkMode, setDarkMode] = useState((localStorage.getItem("dark") === "true")||true);
+    const [darkMode, setDarkMode] = useState((localStorage.getItem("dark") === "true"));
 
     // Function to toggle dark mode state
     const toggleDarkMode = () => {

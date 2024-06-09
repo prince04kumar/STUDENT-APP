@@ -125,7 +125,7 @@ export default function Borrow() {
             }}>
               <MdAdd /> &nbsp; Add Borrow
             </div><br />
-            <div className='flex w-full items-center justify-center bg-gray-900 dark:bg-gray-700 p-3 rounded text-2xl text-gray-200 cursor-pointer hover:bg-gray-800'>
+            <div className='flex w-full items-center justify-center bg-gray-400 dark:bg-gray-700 p-3 rounded text-2xl text-gray-200 cursor-pointer hover:bg-gray-800'>
               <input type="date" className="outline-none bg-transparent border-none text-black dark:text-white" value={`${year}-${month.toString().padStart(2, '0')}-${date.toString().padStart(2, '0')}`} onChange={(e) => {
                 const selectedDate = new Date(e.target.value);
                 setYear(selectedDate.getFullYear());
