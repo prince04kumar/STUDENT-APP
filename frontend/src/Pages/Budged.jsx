@@ -1,9 +1,10 @@
 import React from 'react'
+import Nev from '../Components/Nev'
 
 export default function Budged() {
   return (
     <div>
-      budged
+      <Nev />
     </div>
   )
 }

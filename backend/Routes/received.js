@@ -35,7 +35,7 @@ router.post('/add', async (req, res) => {
             receivedData[year][month][date] = [];
         }
 
-        receivedData[year][month][date].push([amount, remark]); 
+        receivedData[year][month][date].push([amount, remark]);
 
         await db.run('UPDATE Finance SET received = ? WHERE userID = ?', [
             JSON.stringify(receivedData), userID
@@ -83,6 +83,88 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
 
         res.json({ message: 'Received entry deleted successfully' });
     } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Route to get received data for a specific date, month, and year
+router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
+    const { userID, year, month, date } = req.params;
+
+    try {
+        const db = await dbPromise;
+        const user = await db.get('SELECT * FROM Finance WHERE userID = ?', [userID]);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const receivedData = JSON.parse(user.received || '{}');
+
+        if (!receivedData[year] || !receivedData[year][month] || !receivedData[year][month][date]) {
+            return res.status(404).json({ error: 'No received entries found for the specified date' });
+        }
+
+        const receivedEntries = receivedData[year][month][date];
+
+        res.json({ receivedEntries });
+    } catch (err) {
+        console.error('Error fetching received entries:', err);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Route to get received summary for a specific month and date
+router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
+    const { userID, year, month, date } = req.params;
+
+    try {
+        const db = await dbPromise;
+        const user = await db.get('SELECT * FROM Finance WHERE userID = ?', [userID]);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const receivedData = JSON.parse(user.received || '{}');
+        const monthlyReceivedEntries = receivedData[year]?.[month] || {};
+        const dailyReceivedEntries = monthlyReceivedEntries[date] || [];
+
+        // Calculate total received for the month
+        let monthlyTotal = 0;
+        for (const day in monthlyReceivedEntries) {
+            const entries = monthlyReceivedEntries[day];
+            for (const [amount] of entries) {
+                monthlyTotal += parseFloat(amount);
+            }
+        }
+
+        // Calculate total received for the specific date
+        let dailyTotal = 0;
+        for (const [amount] of dailyReceivedEntries) {
+            dailyTotal += parseFloat(amount);
+        }
+
+        // Calculate overall total received
+        let overallTotal = 0;
+        for (const yearKey in receivedData) {
+            for (const monthKey in receivedData[yearKey]) {
+                for (const dayKey in receivedData[yearKey][monthKey]) {
+                    const entries = receivedData[yearKey][monthKey][dayKey];
+                    for (const [amount] of entries) {
+                        overallTotal += parseFloat(amount);
+                    }
+                }
+            }
+        }
+
+        res.json({
+            month: { entries: monthlyReceivedEntries, total: monthlyTotal },
+            date: { entries: dailyReceivedEntries, total: dailyTotal },
+            overallTotal
+        });
+    } catch (err) {
+        console.error('Error fetching received summary:', err);
         res.status(500).json({ error: 'Internal server error' });
     }
 });

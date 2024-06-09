@@ -31,9 +31,7 @@ export default function Nev() {
                     <Link to="/gain" className={`${location.pathname === '/gain' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <MdAutoGraph /> &nbsp; Gain
                     </Link>
-                    <Link to="/spent" className={`${location.pathname === '/spent' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
-                        <FaArrowDown /> &nbsp; Spent
-                    </Link>
+                    
 
                     <Link to="/expense-tracker" className={`${location.pathname === '/expense-tracker' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <MdArtTrack /> &nbsp; Expense Tracker
@@ -64,9 +62,7 @@ export default function Nev() {
                     <Link to="/gain" className={`${location.pathname === '/gain' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <MdAutoGraph /> &nbsp; Gain
                     </Link>
-                    <Link to="/spent" className={`${location.pathname === '/spent' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
-                        <FaArrowDown /> &nbsp; Spent
-                    </Link>
+                    
                     <Link to="/expense-tracker" className={`${location.pathname === '/expense-tracker' ? 'bg-blue-900 dark:bg-blue-700' : 'opacity-75 hover:opacity-100'} flex items-center text-white py-4 pl-6`}>
                         <MdArtTrack /> &nbsp; Expense Tracker
                     </Link>
