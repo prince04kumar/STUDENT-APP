@@ -282,4 +282,107 @@ router.get('/get-detailed-summary-date/:userID/:year/:month/:date', async (req, 
     }
 });
 
+// Route to get daily summary for a specific month and year
+router.get('/get-daily-4-summary/:userID/:year/:month', async (req, res) => {
+    const { userID, year, month } = req.params;
+
+    try {
+        const db = await dbPromise;
+        const user = await db.get('SELECT * FROM Finance WHERE userID = ?', [userID]);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const borrowData = JSON.parse(user.borrow || '{}');
+        const receivedData = JSON.parse(user.received || '{}');
+        const spendData = JSON.parse(user.spend || '{}');
+
+        const days = {};
+
+        // Iterate over borrow data for the specified year and month
+        if (borrowData[year] && borrowData[year][month]) {
+            for (const date in borrowData[year][month]) {
+                const borrowSum = calculateSum({ [year]: { [month]: { [date]: borrowData[year][month][date] } } });
+                days[date] = days[date] || { borrowSum: 0, receivedSum: 0, spendSum: 0 };
+                days[date].borrowSum += borrowSum;
+            }
+        }
+
+        // Iterate over received data for the specified year and month
+        if (receivedData[year] && receivedData[year][month]) {
+            for (const date in receivedData[year][month]) {
+                const receivedSum = calculateSum({ [year]: { [month]: { [date]: receivedData[year][month][date] } } });
+                days[date] = days[date] || { borrowSum: 0, receivedSum: 0, spendSum: 0 };
+                days[date].receivedSum += receivedSum;
+            }
+        }
+
+        // Iterate over spend data for the specified year and month
+        if (spendData[year] && spendData[year][month]) {
+            for (const date in spendData[year][month]) {
+                const spendSum = calculateSum({ [year]: { [month]: { [date]: spendData[year][month][date] } } });
+                days[date] = days[date] || { borrowSum: 0, receivedSum: 0, spendSum: 0 };
+                days[date].spendSum += spendSum;
+            }
+        }
+
+        // Calculate earnedSum (receivedSum - spendSum) for each date
+        for (const date in days) {
+            days[date].earnedSum = days[date].receivedSum - days[date].spendSum;
+        }
+
+        // Format response as an array of daily summaries
+        const dailySummaries = Object.keys(days).map(date => ({
+            date,
+            ...days[date]
+        }));
+
+        res.json({ dailySummaries });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Route to get detailed summary for a specific date
+router.get('/get-detailed-summary-4/:userID/:year/:month/:date', async (req, res) => {
+    const { userID, year, month, date } = req.params;
+
+    try {
+        const db = await dbPromise;
+        const user = await db.get('SELECT * FROM Finance WHERE userID = ?', [userID]);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const borrowData = JSON.parse(user.borrow || '{}');
+        const receivedData = JSON.parse(user.received || '{}');
+        const spendData = JSON.parse(user.spend || '{}');
+
+        const borrowSum = borrowData[year] && borrowData[year][month] && borrowData[year][month][date]
+            ? calculateSum({ [year]: { [month]: { [date]: borrowData[year][month][date] } } })
+            : 0;
+
+        const receivedSum = receivedData[year] && receivedData[year][month] && receivedData[year][month][date]
+            ? calculateSum({ [year]: { [month]: { [date]: receivedData[year][month][date] } } })
+            : 0;
+
+        const spendSum = spendData[year] && spendData[year][month] && spendData[year][month][date]
+            ? calculateSum({ [year]: { [month]: { [date]: spendData[year][month][date] } } })
+            : 0;
+
+        const earnedSum = receivedSum - spendSum; // Assuming earned = received - spend
+
+        res.json({
+            borrowSum,
+            receivedSum,
+            spendSum,
+            earnedSum
+        });
+    } catch (err) {
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 export default router;
