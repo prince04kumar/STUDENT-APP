@@ -1,12 +1,31 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import logo from '../assets/Images/logo.jpg'
 import saving from '../assets/Images/saving.jpg'
 import { FaBars, FaCoins, FaFacebook, FaHome, FaInstagram, FaLightbulb, FaLinkedin, FaMoneyBill, FaSignOutAlt, FaTwitter, FaWindowClose } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import '../index.css'
+import { MdDarkMode, MdLightMode } from 'react-icons/md';
 
 export default function Root() {
     const [isOpen, setIsOpen] = useState(false);
-    const user = localStorage.getItem("user")
+    const user = localStorage.getItem("user");
+    const [darkMode, setDarkMode] = useState((localStorage.getItem("dark") === "true")||true);
+
+    // Function to toggle dark mode state
+    const toggleDarkMode = () => {
+        setDarkMode(!darkMode);
+    };
+
+    // Effect to update HTML class when darkMode changes
+    useEffect(() => {
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem("dark", true);
+        } else {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem("dark", false);
+        }
+    }, [darkMode]);
     return (
         <div>
             <header className="fixed w-full">
@@ -35,6 +54,10 @@ export default function Root() {
                                     <Link to="/auth/register" className="text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 sm:mr-2 lg:mr-0 dark:bg-purple-600 dark:hover:bg-purple-700 focus:outline-none dark:focus:ring-purple-800">Sign UP</Link>
                                 </>
                             }
+                            
+                            <div onClick={()=>setDarkMode(!darkMode)} className='px-2 dark:text-white text-2xl cursor-pointer'>
+                                {!darkMode ? <MdDarkMode />: <MdLightMode/>}
+                            </div>
                         </div>
                         <div className="items-center justify-between hidden w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
                             <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
