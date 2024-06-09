@@ -1,9 +1,9 @@
 import express from 'express';
-import dbPromise from '../db.js'; // Adjust path if necessary
+import dbPromise from '../db.js';
 
 const router = express.Router();
 
-// Route to add an expense entry
+
 router.post('/add', async (req, res) => {
     const { userID, amount, remark } = req.body;
 
@@ -47,7 +47,6 @@ router.post('/add', async (req, res) => {
     }
 });
 
-// Route to delete an expense entry
 router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
     const { userID, year, month, date, index } = req.params;
 
@@ -87,7 +86,7 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
     }
 });
 
-// Route to get expense data for a specific date, month, and year
+
 router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -114,7 +113,7 @@ router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
     }
 });
 
-// Route to get expense summary for a specific month and date
+
 router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -130,7 +129,7 @@ router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
         const monthlySpendEntries = spendData[year]?.[month] || {};
         const dailySpendEntries = monthlySpendEntries[date] || [];
 
-        // Calculate total spend for the month
+        
         let monthlyTotal = 0;
         for (const day in monthlySpendEntries) {
             const entries = monthlySpendEntries[day];
@@ -139,13 +138,13 @@ router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
             }
         }
 
-        // Calculate total spend for the specific date
+        
         let dailyTotal = 0;
         for (const [amount] of dailySpendEntries) {
             dailyTotal += parseFloat(amount);
         }
 
-        // Calculate overall total spend
+        
         let overallTotal = 0;
         for (const yearKey in spendData) {
             for (const monthKey in spendData[yearKey]) {

@@ -24,7 +24,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware
+
 app.use(express.json()); 
 app.use(cors()); 
 app.use(express.urlencoded({ extended: true })); 
@@ -38,10 +38,10 @@ app.use('/api/normals', normalsRout);
 
 // Default route
 app.get('/', (req, res) => {
-    res.json({"message": "Server is running"});
+    res.json({"message": "Server kaam kr raha"});
 });
 
-const PORT = process.env.PORT || 3000; // Use environment variable for port or default to 3000
+const PORT = process.env.PORT || 3000;
 
 dbPromise.then(() => {
     app.listen(PORT, () => {

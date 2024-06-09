@@ -1,9 +1,9 @@
 import express from 'express';
-import dbPromise from '../db.js'; // Adjust path if necessary
+import dbPromise from '../db.js'; 
 
 const router = express.Router();
 
-// Route to add a received entry
+
 router.post('/add', async (req, res) => {
     const { userID, amount, remark } = req.body;
 
@@ -47,7 +47,7 @@ router.post('/add', async (req, res) => {
     }
 });
 
-// Route to delete a received entry
+
 router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
     const { userID, year, month, date, index } = req.params;
 
@@ -87,7 +87,7 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
     }
 });
 
-// Route to get received data for a specific date, month, and year
+
 router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -114,7 +114,7 @@ router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
     }
 });
 
-// Route to get received summary for a specific month and date
+
 router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -130,7 +130,7 @@ router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
         const monthlyReceivedEntries = receivedData[year]?.[month] || {};
         const dailyReceivedEntries = monthlyReceivedEntries[date] || [];
 
-        // Calculate total received for the month
+        
         let monthlyTotal = 0;
         for (const day in monthlyReceivedEntries) {
             const entries = monthlyReceivedEntries[day];
@@ -139,13 +139,12 @@ router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
             }
         }
 
-        // Calculate total received for the specific date
+        
         let dailyTotal = 0;
         for (const [amount] of dailyReceivedEntries) {
             dailyTotal += parseFloat(amount);
         }
 
-        // Calculate overall total received
         let overallTotal = 0;
         for (const yearKey in receivedData) {
             for (const monthKey in receivedData[yearKey]) {

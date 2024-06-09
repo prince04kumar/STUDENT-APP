@@ -1,9 +1,9 @@
 import express from 'express';
-import dbPromise from '../db.js'; // Adjust path if necessary
+import dbPromise from '../db.js'; 
 
 const router = express.Router();
 
-// Route to add a borrow entry
+
 router.post('/add', async (req, res) => {
     const { userID, amount, remark } = req.body;
 
@@ -48,7 +48,7 @@ router.post('/add', async (req, res) => {
     }
 });
 
-// Route to delete a borrow entry
+
 router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
     const { userID, year, month, date, index } = req.params;
 
@@ -62,15 +62,15 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
 
         const borrowData = JSON.parse(user.borrow || '{}');
 
-        // Check if the specific entry exists
+        
         if (!borrowData[year] || !borrowData[year][month] || !borrowData[year][month][date] || !borrowData[year][month][date][index]) {
             return res.status(404).json({ error: 'Borrow entry not found' });
         }
 
-        // Remove the entry from the array
+        
         borrowData[year][month][date].splice(index, 1);
 
-        // Clean up empty objects if necessary
+        
         if (borrowData[year][month][date].length === 0) {
             delete borrowData[year][month][date];
         }
@@ -81,7 +81,7 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
             delete borrowData[year];
         }
 
-        // Update the database with the modified borrow data
+        
         await db.run('UPDATE Finance SET borrow = ? WHERE userID = ?', [
             JSON.stringify(borrowData), userID
         ]);
@@ -93,7 +93,7 @@ router.delete('/delete/:userID/:year/:month/:date/:index', async (req, res) => {
     }
 });
 
-// Route to get borrow data for a specific date, month, and year
+
 router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -120,7 +120,7 @@ router.get('/get-by-date/:userID/:year/:month/:date', async (req, res) => {
     }
 });
 
-// Route to get borrow summary for a specific month and date
+
 router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -136,7 +136,7 @@ router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
         const monthlyBorrowEntries = borrowData[year]?.[month] || {};
         const dailyBorrowEntries = monthlyBorrowEntries[date] || [];
 
-        // Calculate total borrow for the month
+        
         let monthlyTotal = 0;
         for (const day in monthlyBorrowEntries) {
             const entries = monthlyBorrowEntries[day];
@@ -145,13 +145,13 @@ router.get('/summary/:userID/:year/:month/:date', async (req, res) => {
             }
         }
 
-        // Calculate total borrow for the specific date
+        
         let dailyTotal = 0;
         for (const [amount] of dailyBorrowEntries) {
             dailyTotal += parseFloat(amount);
         }
 
-        // Calculate overall total borrow
+        
         let overallTotal = 0;
         for (const yearKey in borrowData) {
             for (const monthKey in borrowData[yearKey]) {

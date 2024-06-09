@@ -1,17 +1,16 @@
 // Routes/auth.js
 import express from 'express';
 import bcrypt from 'bcrypt';
-import nodemailer from 'nodemailer'; // Assuming nodemailer is installed
-import dbPromise from '../db.js'; // Adjust path if necessary
+import nodemailer from 'nodemailer';
+import dbPromise from '../db.js';
 
 const router = express.Router();
 
-// Function to create Users and Finance tables and the necessary triggers if not exists
+
 const createTablesAndTriggers = async () => {
     try {
         const db = await dbPromise;
 
-        // Create Users table
         await db.run(`
             CREATE TABLE IF NOT EXISTS Users (
                 userID TEXT PRIMARY KEY,
@@ -23,7 +22,6 @@ const createTablesAndTriggers = async () => {
             )
         `);
 
-        // Create Finance table
         await db.run(`
             CREATE TABLE IF NOT EXISTS Finance (
                 userID TEXT PRIMARY KEY,
@@ -35,7 +33,6 @@ const createTablesAndTriggers = async () => {
             )
         `);
 
-        // Create trigger to insert into Finance table when a new user is created
         await db.run(`
             CREATE TRIGGER IF NOT EXISTS after_user_insert
             AFTER INSERT ON Users
@@ -45,7 +42,6 @@ const createTablesAndTriggers = async () => {
             END;
         `);
 
-        // Create trigger to delete from Finance table when a user is deleted
         await db.run(`
             CREATE TRIGGER IF NOT EXISTS after_user_delete
             AFTER DELETE ON Users
@@ -61,9 +57,8 @@ const createTablesAndTriggers = async () => {
     }
 };
 
-createTablesAndTriggers(); // Call function to create Users and Finance tables and triggers
+createTablesAndTriggers();
 
-// Route to register a new user
 router.post('/register', async (req, res) => {
     const { email, password, user_name } = req.body;
 
@@ -76,7 +71,6 @@ router.post('/register', async (req, res) => {
         const userID = Date.now().toString();
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert into Users table
         await db.run('INSERT INTO Users (userID, email, password, user_name) VALUES (?, ?, ?, ?)', [
             userID, email, hashedPassword, user_name
         ]);
@@ -90,7 +84,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Route to login a user
 router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
@@ -112,7 +105,6 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
-        // For security, do not include sensitive user information in the response
         const userWithoutPassword = {
             userID: user.userID,
             email: user.email,
@@ -125,7 +117,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Route to initiate password reset (generates and sends reset token)
 router.post('/reset-password', async (req, res) => {
     const { email } = req.body;
 
@@ -177,7 +168,6 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 
-// Route to reset password
 router.post('/reset-password/:token', async (req, res) => {
     const { token } = req.params;
     const { newPassword } = req.body;
@@ -209,14 +199,13 @@ router.post('/reset-password/:token', async (req, res) => {
     }
 });
 
-// Route to delete a user (deletion in Finance table will be handled by the trigger)
 router.delete('/delete/:userID', async (req, res) => {
     const { userID } = req.params;
 
     try {
         const db = await dbPromise;
 
-        // Delete from Users table (Finance deletion will be triggered automatically)
+        
         await db.run('DELETE FROM Users WHERE userID = ?', [userID]);
 
         res.json({ message: 'User and associated finance data deleted successfully' });

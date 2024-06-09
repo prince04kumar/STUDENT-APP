@@ -1,16 +1,16 @@
 import express from 'express';
-import dbPromise from '../db.js'; // Adjust path if necessary
+import dbPromise from '../db.js'; 
 
 const router = express.Router();
 
-// Helper function to calculate the sum of amounts
+
 const calculateSum = (data) => {
     let sum = 0;
     for (const year in data) {
         for (const month in data[year]) {
             for (const date in data[year][month]) {
                 for (const entry of data[year][month][date]) {
-                    sum += parseInt(entry[0]); // Assuming entry[0] is the amount and is a string
+                    sum += parseInt(entry[0]); 
                 }
             }
         }
@@ -18,7 +18,7 @@ const calculateSum = (data) => {
     return sum;
 };
 
-// Route to get the sum of borrows, received, and earned for the ongoing month
+
 router.get('/get-sum-summary/:userID', async (req, res) => {
     const { userID } = req.params;
     const now = new Date();
@@ -51,14 +51,14 @@ router.get('/get-sum-summary/:userID', async (req, res) => {
             borrowSum,
             receivedSum,
             spendSum,
-            earnedSum: receivedSum - spendSum // Assuming earned = received - spend
+            earnedSum: receivedSum - spendSum 
         });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Route to get the sum of borrows, received, and earned for each month
+
 router.get('/get-sum-summary-month/:userID', async (req, res) => {
     const { userID } = req.params;
 
@@ -76,7 +76,6 @@ router.get('/get-sum-summary-month/:userID', async (req, res) => {
 
         const months = {};
 
-        // Iterate over the borrow data to calculate sums for each month
         for (const year in borrowData) {
             for (const month in borrowData[year]) {
                 const borrowSum = calculateSum({ [year]: { [month]: borrowData[year][month] } });
@@ -91,7 +90,7 @@ router.get('/get-sum-summary-month/:userID', async (req, res) => {
                     borrowSum,
                     receivedSum,
                     spendSum,
-                    earnedSum: receivedSum - spendSum // Assuming earned = received - spend
+                    earnedSum: receivedSum - spendSum 
                 };
             }
         }
@@ -102,7 +101,7 @@ router.get('/get-sum-summary-month/:userID', async (req, res) => {
     }
 });
 
-// Route to get the sum of borrows, received, and earned for a specific year
+
 router.get('/get-sum-summary-year/:userID/:year', async (req, res) => {
     const { userID, year } = req.params;
 
@@ -126,14 +125,14 @@ router.get('/get-sum-summary-year/:userID/:year', async (req, res) => {
             borrowSum,
             receivedSum,
             spendSum,
-            earnedSum: receivedSum - spendSum // Assuming earned = received - spend
+            earnedSum: receivedSum - spendSum 
         });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Route to get detailed data for borrows, received, and spends for a specific year and month
+
 router.get('/get-detailed-summary/:userID/:year/:month', async (req, res) => {
     const { userID, year, month } = req.params;
 
@@ -163,7 +162,7 @@ router.get('/get-detailed-summary/:userID/:year/:month', async (req, res) => {
     }
 });
 
-// Route to get the overall summary (total borrows, received, and earned) for a user
+
 router.get('/get-overall-summary/:userID', async (req, res) => {
     const { userID } = req.params;
 
@@ -187,14 +186,14 @@ router.get('/get-overall-summary/:userID', async (req, res) => {
             borrowSum,
             receivedSum,
             spendSum,
-            earnedSum: receivedSum - spendSum // Assuming earned = received - spend
+            earnedSum: receivedSum - spendSum
         });
     } catch (err) {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Route to get daily summary for a specific month
+
 router.get('/get-daily-summary/:userID/:year/:month', async (req, res) => {
     const { userID, year, month } = req.params;
 
@@ -237,7 +236,7 @@ router.get('/get-daily-summary/:userID/:year/:month', async (req, res) => {
         }
 
         for (const date in days) {
-            days[date].earnedSum = days[date].receivedSum - days[date].spendSum; // Assuming earned = received - spend
+            days[date].earnedSum = days[date].receivedSum - days[date].spendSum; 
         }
 
         res.json({ days });
@@ -246,7 +245,7 @@ router.get('/get-daily-summary/:userID/:year/:month', async (req, res) => {
     }
 });
 
-// Route to get a detailed summary for a specific date
+
 router.get('/get-detailed-summary-date/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -282,7 +281,7 @@ router.get('/get-detailed-summary-date/:userID/:year/:month/:date', async (req, 
     }
 });
 
-// Route to get daily summary for a specific month and year
+
 router.get('/get-daily-4-summary/:userID/:year/:month', async (req, res) => {
     const { userID, year, month } = req.params;
 
@@ -300,7 +299,7 @@ router.get('/get-daily-4-summary/:userID/:year/:month', async (req, res) => {
 
         const days = {};
 
-        // Iterate over borrow data for the specified year and month
+        
         if (borrowData[year] && borrowData[year][month]) {
             for (const date in borrowData[year][month]) {
                 const borrowSum = calculateSum({ [year]: { [month]: { [date]: borrowData[year][month][date] } } });
@@ -309,7 +308,7 @@ router.get('/get-daily-4-summary/:userID/:year/:month', async (req, res) => {
             }
         }
 
-        // Iterate over received data for the specified year and month
+        
         if (receivedData[year] && receivedData[year][month]) {
             for (const date in receivedData[year][month]) {
                 const receivedSum = calculateSum({ [year]: { [month]: { [date]: receivedData[year][month][date] } } });
@@ -318,7 +317,7 @@ router.get('/get-daily-4-summary/:userID/:year/:month', async (req, res) => {
             }
         }
 
-        // Iterate over spend data for the specified year and month
+        
         if (spendData[year] && spendData[year][month]) {
             for (const date in spendData[year][month]) {
                 const spendSum = calculateSum({ [year]: { [month]: { [date]: spendData[year][month][date] } } });
@@ -327,12 +326,12 @@ router.get('/get-daily-4-summary/:userID/:year/:month', async (req, res) => {
             }
         }
 
-        // Calculate earnedSum (receivedSum - spendSum) for each date
+        
         for (const date in days) {
             days[date].earnedSum = days[date].receivedSum - days[date].spendSum;
         }
 
-        // Format response as an array of daily summaries
+        
         const dailySummaries = Object.keys(days).map(date => ({
             date,
             ...days[date]
@@ -344,7 +343,7 @@ router.get('/get-daily-4-summary/:userID/:year/:month', async (req, res) => {
     }
 });
 
-// Route to get detailed summary for a specific date
+
 router.get('/get-detailed-summary-4/:userID/:year/:month/:date', async (req, res) => {
     const { userID, year, month, date } = req.params;
 
@@ -372,7 +371,7 @@ router.get('/get-detailed-summary-4/:userID/:year/:month/:date', async (req, res
             ? calculateSum({ [year]: { [month]: { [date]: spendData[year][month][date] } } })
             : 0;
 
-        const earnedSum = receivedSum - spendSum; // Assuming earned = received - spend
+        const earnedSum = receivedSum - spendSum; 
 
         res.json({
             borrowSum,
